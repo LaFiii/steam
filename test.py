@@ -1,34 +1,35 @@
-from selenium import webdriver
+import pytest
 from faker import Faker
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import TimeoutException,NoSuchElementException
+from selenium.common.exceptions import TimeoutException
 
-fake = Faker()
-login_str = fake.user_name()
-pwd_str = fake.password()
-driver = webdriver.Chrome()
-wait = WebDriverWait(driver, 10)
-url = "https://store.steampowered.com/"
+LOGIN_PAGE_BTN = (By.XPATH, "//*[contains(@class,'global_action_link') and contains(@href,'/login')]")
+USERNAME_FIELD = (By.XPATH, "//input[@type='text']")
+PASSWORD_FIELD = (By.XPATH, "//input[@type='password']")
+SUBMIT_BTN = (By.XPATH, "//button[@type='submit' and contains(normalize-space(.), 'Войти')]")
+ERROR_MESSAGE = (By.XPATH,
+                 "//*[contains(text(),'Пожалуйста, проверьте свой пароль и имя аккаунта и попробуйте снова.')]")
 
-driver.get(url)
-login_btn = wait.until(EC.element_to_be_clickable((By.XPATH,
-        "//*[contains(@class,'global_action_link') and contains(@href,'/login')]")))
-login_btn.click()
-login = wait.until(EC.visibility_of_element_located((By.XPATH, "//input[@type='text']")))
-login.send_keys(login_str)
-password = wait.until(EC.visibility_of_element_located((By.XPATH, "//input[@type='password']")))
-password.send_keys(pwd_str)
-login_btn = wait.until(EC.element_to_be_clickable((By.XPATH,
-        "//button[@type='submit' and contains(normalize-space(.), 'Войти')]")))
-login_btn.click()
-try:
-    short_wait = WebDriverWait(driver,5)
-    short_wait.until(EC.visibility_of_element_located((By.XPATH,
-        "//*[contains(text(),'Пожалуйста, проверьте свой пароль и имя аккаунта и попробуйте снова.')]")))
-    print("Ошибка входа: неверный логин/пароль")
-except (TimeoutException,NoSuchElementException):
-    print("Сообщение об ошибке не найдено")
-finally:
-    driver.quit()
+
+@pytest.mark.parametrize("run_id", range(5))
+def test(driver, run_id):
+    fake = Faker()
+    login_str = fake.user_name()
+    pwd_str = fake.password()
+    wait = WebDriverWait(driver, 10)
+    url = "https://store.steampowered.com/"
+
+    driver.get(url)
+    wait.until(EC.element_to_be_clickable(LOGIN_PAGE_BTN)).click()
+    wait.until(EC.visibility_of_element_located(USERNAME_FIELD)).send_keys(login_str)
+    wait.until(EC.visibility_of_element_located(PASSWORD_FIELD)).send_keys(pwd_str)
+    wait.until(EC.element_to_be_clickable(SUBMIT_BTN)).click()
+
+    try:
+        error = wait.until(EC.visibility_of_element_located(ERROR_MESSAGE))
+    except TimeoutException:
+        pytest.fail("Ожидали сообщение об ошибке логина, но его не было")
+    else:
+        assert "Пожалуйста, проверьте" in error.text
