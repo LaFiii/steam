@@ -14,5 +14,4 @@ def test_search_and_filter(driver, game, expected_count):
     results_page = SearchResultsPage(driver)
     actual_count = results_page.get_results_count()
     assert actual_count >= expected_count, (
-        f"Ожидали минимум {expected_count} результатов, получили {actual_count}"
-    )
+        f"Ожидали минимум {expected_count} результатов, получили {actual_count}")
