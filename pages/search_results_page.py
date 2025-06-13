@@ -13,8 +13,13 @@ class SearchResultsPage(BasePage):
 
     def get_prices(self, top_n: int = None) -> list[float]:
         elems = self.wait.until(EC.presence_of_all_elements_located(self.PRICE_LABEL))
-        prices = [float("".join(ch for ch in el.text if ch.isdigit() or ch == ".").replace(",", "."))
-                  for el in elems
-                  if el.text.strip()
-                  ]
-        return prices
+        prices = []
+        for el in elems:
+            price_str = "".join(ch for ch in el.text if ch.isdigit() or ch in ",.")
+            if not price_str or not any(ch.isdigit() for ch in price_str):
+                continue
+            try:
+                prices.append(float(price_str.replace(",", ".")))
+            except ValueError:
+                continue
+        return prices[:top_n] if top_n else prices

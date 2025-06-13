@@ -2,7 +2,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from .base_page import BasePage
-
+import time
 
 class MainPage(BasePage):
     UNIQUE_LOCATOR = (By.XPATH, '//*[contains(@class, "btn_green_white_innerfade")]')
@@ -10,6 +10,8 @@ class MainPage(BasePage):
     BTN_LOCATOR = (By.ID, "store_search_link")
     SORT_LOCATOR = (By.ID, "sort_by_trigger")
     PRICE_LOCATOR = (By.ID, "Price_DESC")
+    LOADING_LOCATOR = (By.ID, "searchtag_tmpl")
+    Loc = (By.XPATH, "//*[@id='search_resultsRows']//a[@href]")
 
     def search(self, game_name):
         self.wait.until(EC.visibility_of_element_located(self.SEARCH_LOCATOR)).send_keys(game_name, Keys.ENTER)
@@ -17,3 +19,4 @@ class MainPage(BasePage):
     def sort_by_price(self):
         self.wait.until(EC.element_to_be_clickable(self.SORT_LOCATOR)).click()
         self.wait.until(EC.element_to_be_clickable(self.PRICE_LOCATOR)).click()
+        time.sleep(1)
