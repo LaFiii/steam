@@ -35,4 +35,4 @@ def test_auth(login_page):
     wait.until(EC.element_to_be_clickable(SUBMIT_BTN))
     error = wait.until(EC.visibility_of_element_located(ERROR_MESSAGE))
 
-    assert "Пожалуйста, проверьте" in error.text
+    assert "Пожалуйста, проверьте свой пароль и имя аккаунта и попробуйте снова." in error.text
