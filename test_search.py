@@ -8,7 +8,7 @@ from config_reader import ConfigReader
 def test_search_and_filter(driver, game, expected_count):
     driver.get(ConfigReader.get_base_url())
     main_page = MainPage(driver)
-    main_page.open()
+    main_page.wait_for_open()
     main_page.search(game)
     main_page.sort_by_price()
     results_page = SearchResultsPage(driver)

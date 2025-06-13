@@ -11,9 +11,6 @@ class MainPage(BasePage):
     SORT_LOCATOR = (By.ID, "sort_by_trigger")
     PRICE_LOCATOR = (By.ID, "Price_DESC")
 
-    def open(self):
-        self.wait.until(EC.visibility_of_element_located(self.UNIQUE_LOCATOR))
-
     def search(self, game_name):
         self.wait.until(EC.visibility_of_element_located(self.SEARCH_LOCATOR)).send_keys(game_name, Keys.ENTER)
 

@@ -1,10 +1,10 @@
 import pytest
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-from enum import Enum
+from enum import Enum, StrEnum
 
 
-class Locale(Enum):
+class Locale(StrEnum):
     RUSSIAN = "ru"
     ENGLISH = "en"
 
@@ -13,8 +13,7 @@ class Locale(Enum):
 def driver(request):
     lang = request.param
     options = Options()
-    code = lang.value
-    options.add_argument(f"--lang={code}")
+    options.add_argument(f"--lang={lang}")
     driver = webdriver.Chrome(options=options)
     yield driver
     driver.quit()
