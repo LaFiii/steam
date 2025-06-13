@@ -1,23 +1,20 @@
 import pytest
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-
-LOCALE_MAP = {"russian": "ru", "english": "en"}
-
-
-@pytest.fixture(scope="session", params=["russian", "english"])
-def browser_lang(request):
-    return request.param
+from enum import Enum
 
 
-@pytest.fixture(scope="session")
-def driver(browser_lang):
+class Locale(Enum):
+    RUSSIAN = "ru"
+    ENGLISH = "en"
+
+
+@pytest.fixture(scope="session", params=[Locale.RUSSIAN, Locale.ENGLISH])
+def driver(request):
+    lang = request.param
     options = Options()
-    code = LOCALE_MAP[browser_lang]
+    code = lang.value
     options.add_argument(f"--lang={code}")
-    options.add_experimental_option("prefs", {
-        "intl.accept_languages": code
-    })
     driver = webdriver.Chrome(options=options)
     driver.maximize_window()
     yield driver

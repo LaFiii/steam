@@ -1,8 +1,4 @@
 {
   "default_timeout": 10,
-  "base_url": "https://store.steampowered.com/",
-  "expected_min_results": {
-    "The Witcher": 10,
-    "Fallout": 20
-  }
+  "base_url": "https://store.steampowered.com/"
 }
