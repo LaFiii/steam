@@ -11,15 +11,14 @@ class SearchResultsPage(BasePage):
         rows = self.wait.until(EC.presence_of_all_elements_located(self.RESULT_ROWS))
         return len(rows)
 
-    def get_prices(self, top_n = None):
+    def get_prices(self, top_n=None):
         elems = self.wait.until(EC.presence_of_all_elements_located(self.PRICE_LABEL))
         prices = []
         for el in elems:
             price_str = "".join(ch for ch in el.text if ch.isdigit() or ch in ",.")
             if not price_str or not any(ch.isdigit() for ch in price_str):
                 continue
-            try:
-                prices.append(float(price_str.replace(",", ".")))
-            except ValueError:
-                continue
+            float_candidate = price_str.replace(",", ".")
+            if float_candidate.replace(".", "", 1).isdigit():
+                prices.append(float(float_candidate))
         return prices[:top_n] if top_n else prices
