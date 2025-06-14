@@ -11,7 +11,7 @@ class SearchResultsPage(BasePage):
         rows = self.wait.until(EC.presence_of_all_elements_located(self.RESULT_ROWS))
         return len(rows)
 
-    def get_prices(self, top_n: int = None) -> list[float]:
+    def get_prices(self, top_n = None):
         elems = self.wait.until(EC.presence_of_all_elements_located(self.PRICE_LABEL))
         prices = []
         for el in elems:

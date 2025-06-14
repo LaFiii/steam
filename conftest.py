@@ -1,7 +1,7 @@
 import pytest
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-from enum import Enum, StrEnum
+from enum import StrEnum
 
 
 class Locale(StrEnum):
