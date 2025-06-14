@@ -12,15 +12,13 @@ class MainPage(BasePage):
     PRICE_LOCATOR = (By.ID, "Price_DESC")
     LOADING_LOCATOR = (By.ID, "searchtag_tmpl")
     CONTAINER_LOCATOR = (By.ID, "search_result_container")
+    CONTAINER_LOCATOR_NOT = (By.XPATH, "//*[@id='search_result_container' and (contains(@style, 'opacity'))]")
 
     def search(self, game_name):
         self.wait.until(EC.visibility_of_element_located(self.SEARCH_LOCATOR)).send_keys(game_name, Keys.ENTER)
 
-    def _wait_for_container_opacity(self):
-        self.wait.until(
-            lambda d: "opacity" not in (d.find_element(*self.CONTAINER_LOCATOR).get_attribute("style") or ""))
-
     def sort_by_price(self):
         self.wait.until(EC.element_to_be_clickable(self.SORT_LOCATOR)).click()
         self.wait.until(EC.element_to_be_clickable(self.PRICE_LOCATOR)).click()
-        self._wait_for_container_opacity()
+        self.wait.until(EC.presence_of_element_located(self.CONTAINER_LOCATOR_NOT))
+        self.wait.until_not(EC.presence_of_element_located(self.CONTAINER_LOCATOR_NOT))
