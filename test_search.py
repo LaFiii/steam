@@ -1,0 +1,16 @@
+import pytest
+from pages.main_page import MainPage
+from pages.search_results_page import SearchResultsPage
+from config_reader import ConfigReader
+
+
+@pytest.mark.parametrize("game, count", [("The Witcher", 10), ("Fallout", 20)])
+def test_search_and_filter(driver, game, count):
+    driver.get(ConfigReader.get_base_url())
+    main_page = MainPage(driver)
+    main_page.wait_for_open()
+    main_page.search(game)
+    main_page.sort_by_price()
+    results_page = SearchResultsPage(driver)
+    prices = results_page.get_prices()[:count]
+    assert prices == sorted(prices, reverse=True), f"Цены не по убыванию: {prices}"
